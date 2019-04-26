@@ -51,7 +51,7 @@ for i in range(0,len(ictalFiles)):
     data = data['data']
     
     for j in range(0,n_channels):
-        LLictal = np.append(LLictal,channel_line_length(data[:,j],fs,fs,1))
+        LLictal = np.append(LLictal,channel_line_length(data[:,j]))
         
 ictal_labels = np.ones(len(LLictal))
 
@@ -62,7 +62,7 @@ for i in range(0,len(nonictalFiles)):
     data = data['data']
         
     for j in range(0,n_channels):
-        LLnonictal = np.append(LLnonictal,channel_line_length(data[:,j],fs,fs,1))
+        LLnonictal = np.append(LLnonictal,channel_line_length(data[:,j]))
 
 nonictal_labels = np.zeros(len(LLnonictal))
 
