@@ -16,6 +16,10 @@ import numpy as np
 
 
 def channel_line_length(x, n, fs, w):
+    #w = window size in seconds
+    #x = data vector
+    #fs = sampling frequency
+    #n = length of data vector x
     line_length = []
     num_windows = n//fs #floor
     
