@@ -26,7 +26,9 @@ def channel_line_length(x, n, fs, w):
 
 
 
-datafolderpath = 'C:/Users/mbobb/Documents/ece5040'
+
+
+datafolderpath = '/Volumes/TOSHIBA EXT'
 patient = 3
 ictalfilepath = datafolderpath + '/data/patient_'+str(patient)+'/ictal train/'
 nonictalfilepath = datafolderpath + '/data/patient_'+str(patient)+'/non-ictal train/'
