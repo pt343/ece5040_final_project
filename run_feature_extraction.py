@@ -13,8 +13,8 @@ ft2 = get_energy
 ft3 = get_variance
 ft4 = get_power_spec
 
-patient = 3
-datafolderpath = 'C:/Users/mbobb/Documents/ece5040'
+patient = 7
+datafolderpath = '/Volumes/TOSHIBA EXT/'
 
 dt = extract_features_test(datafolderpath, patient, ft1,ft2,ft3,ft4)
 d1, d2, d3, d4 = extract_features_train(datafolderpath, patient, ft1,ft2,ft3,ft4)
