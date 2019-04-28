@@ -104,9 +104,7 @@ if __name__=='__main__':
         val= np.transpose(val)
         print(patient)
         predictions=classifiers[patient-1].predict(val)
-        test=predictions.reshape(-1, predictions.shape[1])
-        
-        predictions=np.mean(predictions.reshape(-1, predictions.shape[1]), axis=1)
+        predictions=np.mean(predictions.reshape(int(predictions.size/channels[patient-1]), channels[patient-1]), axis=1)
         
        
         index=0
