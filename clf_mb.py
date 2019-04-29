@@ -27,7 +27,14 @@ for patient in range(1,2):
         #clf= DecisionTreeClassifier(criterion='gini',max_depth=depth[i])
         #clf = MLPClassifier(solver='sgd',activation = 'tanh', alpha=1e-4, hidden_layer_sizes=n[i])
         t = time.time()
-        clf = SVC(gamma='auto')
+        clf = SVC(kernel = 'rbf', C = 10, gamma = 10)
+        #start w auto
+        #2nd run C=1 gamma = 1
+        #C=1, gamma = 0.01
+        #c = .01, gamma = 0.01
+        #c = 0.1, gamma = 10
+        #10,10
+        # - test error for all combos 0.73170132
         print('start fit')
         clf.fit(Xtrn, ytrn)
         elapsed = (time.time()-t)/60
@@ -56,18 +63,4 @@ for patient in range(1,2):
         
         #classifiers.append(clf)        
                 
-
-        
-'''        
-        
-for i in range(0,len(indices)):
-    bagging = BaggingClassifier(base_estimator = DecisionTreeClassifier(criterion='entropy'), n_estimators = indices[i])
-    bagging.fit(X_train,y_train)
-    y_train_pred = bagging.predict(X_train)
-    Err_Train[i] = accuracy_score(y_train,y_train_pred)
-    
-    y_test_pred = bagging.predict(X_test)
-    Err_Test[i] = accuracy_score(y_test,y_test_pred)
-            
-'''
 
