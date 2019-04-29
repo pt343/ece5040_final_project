@@ -189,25 +189,27 @@ def get_train(patient):
         readin_nonict=scipy.io.loadmat('patient_'+str(patient)+'_nonict_train')
         
         ict_key=list(readin_ict.keys())
+        ict_key.sort()
         nonict_key=list(readin_nonict.keys())
+        nonict_key.sort()
         
-        ict_label=np.ones(int(readin_ict[ict_key[3]].shape[1]))
-        nonict_label=np.zeros(int(readin_nonict[nonict_key[3]].shape[1]))
+        ict_label=np.ones(int(readin_ict[ict_key[6]].shape[1]))
+        nonict_label=np.zeros(int(readin_nonict[nonict_key[6]].shape[1]))
         labels=np.concatenate((ict_label,nonict_label))
         
-        train_ict=np.asarray([readin_ict[ict_key[3]][0], 
+        train_ict=np.asarray([readin_ict[ict_key[6]][0], 
                readin_ict[ict_key[4]][0],
-               readin_ict[ict_key[5]][0],
-               readin_ict[ict_key[6]][0][::2],
-               readin_ict[ict_key[6]][0][1::2]])
+               readin_ict[ict_key[3]][0],
+               readin_ict[ict_key[5]][0][::2],
+               readin_ict[ict_key[5]][0][1::2]])
         train_ict= np.transpose(train_ict)
         
         
-        train_nonict=np.asarray([readin_nonict[nonict_key[3]][0], 
+        train_nonict=np.asarray([readin_nonict[nonict_key[6]][0], 
                readin_nonict[nonict_key[4]][0],
-               readin_nonict[nonict_key[5]][0],
-               readin_nonict[nonict_key[6]][0][::2],
-               readin_nonict[nonict_key[6]][0][1::2]])
+               readin_nonict[nonict_key[3]][0],
+               readin_nonict[nonict_key[5]][0][::2],
+               readin_nonict[nonict_key[5]][0][1::2]])
         train_nonict= np.transpose(train_nonict)
         
         train= np.concatenate((train_ict, train_nonict))
@@ -219,27 +221,45 @@ def get_val(patient):
     readin_nonict=scipy.io.loadmat('patient_'+str(patient)+'_nonict_val')
         
     ict_key=list(readin_ict.keys())
+    ict_key.sort()
     nonict_key=list(readin_nonict.keys())
+    nonict_key.sort()
         
-    ict_label=np.ones(int(readin_ict[ict_key[3]].shape[1]))
-    nonict_label=np.zeros(int(readin_nonict[nonict_key[3]].shape[1]))
+    ict_label=np.ones(int(readin_ict[ict_key[6]].shape[1]))
+    nonict_label=np.zeros(int(readin_nonict[nonict_key[6]].shape[1]))
     labels=np.concatenate((ict_label,nonict_label))
         
     val_ict=np.asarray([readin_ict[ict_key[3]][0], 
                readin_ict[ict_key[4]][0],
-               readin_ict[ict_key[5]][0],
-               readin_ict[ict_key[6]][0][::2],
-               readin_ict[ict_key[6]][0][1::2]])
+               readin_ict[ict_key[6]][0],
+               readin_ict[ict_key[5]][0][::2],
+               readin_ict[ict_key[5]][0][1::2]])
     val_ict= np.transpose(val_ict)
         
         
     val_nonict=np.asarray([readin_nonict[nonict_key[3]][0], 
                readin_nonict[nonict_key[4]][0],
-               readin_nonict[nonict_key[5]][0],
-               readin_nonict[nonict_key[6]][0][::2],
-               readin_nonict[nonict_key[6]][0][1::2]])
+               readin_nonict[nonict_key[6]][0],
+               readin_nonict[nonict_key[5]][0][::2],
+               readin_nonict[nonict_key[5]][0][1::2]])
     val_nonict= np.transpose(val_nonict)
         
     val= np.concatenate((val_ict, val_nonict))
     
     return val, labels
+
+def get_test(patient):
+    
+    readin=scipy.io.loadmat('patient_'+str(patient)+'_test')
+        
+    key=list(readin.keys())
+    key.sort()
+        
+    val=np.asarray([readin[key[3]][0], 
+               readin[key[4]][0],
+               readin[key[6]][0],
+               readin[key[5]][0][::2],
+               readin[key[5]][0][1::2]])
+    val= np.transpose(val)
+    
+    return val
