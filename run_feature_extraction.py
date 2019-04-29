@@ -13,7 +13,7 @@ ft2 = get_energy
 ft3 = get_variance
 ft4 = get_power_spec
 
-patient = 4
+patient = 5
 datafolderpath = '/Volumes/TOSHIBA EXT/'
 
 dt = extract_features_test(datafolderpath, patient, ft1,ft2,ft3,ft4)

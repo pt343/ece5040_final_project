@@ -15,7 +15,7 @@ if __name__=='__main__':
     
     # load train data
     classifiers=[]
-    
+   
     for patient in range(1,8):
         readin_ict=scipy.io.loadmat('patient_'+str(patient)+'_ict_train')
         readin_nonict=scipy.io.loadmat('patient_'+str(patient)+'_nonict_train')
@@ -86,9 +86,11 @@ if __name__=='__main__':
     #HARDCODE
     channels= [96,56,16,88,104,88,96]
     
-    f = open("submission_one",'w')
+    
+    f = open("submission_test.csv",'w')
     csvwriter = csv.writer(f)
     csvwriter.writerow(["id", "prediction"])
+    row_count=1
     
     for patient in range(1,8):
         
@@ -111,7 +113,9 @@ if __name__=='__main__':
         for prediction in predictions:
             index=index+1
             csvwriter.writerow(["patient_"+str(patient)+"_"+str(index), prediction])
-     
+            row_count=row_count+1
+        print(row_count)
+        #print(index)
     f.close()
     
     
