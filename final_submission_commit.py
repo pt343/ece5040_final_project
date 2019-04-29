@@ -108,10 +108,12 @@ if __name__=='__main__':
         
        
         index=0
+        count_rows=0
         for prediction in predictions:
             index=index+1
             csvwriter.writerow(["patient_"+str(patient)+"_"+str(index), prediction])
-     
+            count_rows=count_rows+1
+            
     f.close()
     
     
