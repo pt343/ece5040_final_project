@@ -170,7 +170,7 @@ def extract_features_test(datafolderpath, patient, *argv):
     for arg in argv:
         testfeatures = []
         #loop over every ictal training file
-        for i in range(1,len(files)-1):
+        for i in range(1,len(files)):
             data = scipy.io.loadmat(filepath + 'patient_' + str(patient)+ '_test_' + str(i))
             data = data['data']
             data = np.nan_to_num(data)
