@@ -1,13 +1,7 @@
 import scipy.io
 from sklearn.tree import DecisionTreeClassifier
 import numpy as np
-from sklearn import svm
 import csv
-
-'''
-Final submission functions
-'''
-
 
 
 
@@ -15,6 +9,10 @@ if __name__=='__main__':
     
     # load train data
     classifiers=[]
+
+    # keep track of errors
+    train_errors = []
+    val_errors = []
    
     for patient in range(1,8):
         readin_ict=scipy.io.loadmat('patient_'+str(patient)+'_ict_train')
@@ -46,7 +44,46 @@ if __name__=='__main__':
         
         clf= DecisionTreeClassifier(criterion='gini')
         clf.fit(train, labels)
-        classifiers.append(clf) 
+        classifiers.append(clf)
+
+
+
+        # detect errors from classifier
+
+        # training errors
+        train_predict = clf.predict(train)
+        train_error = clf.get_error(train_predict,labels)
+        train_errors.append(train_error)
+
+        # held-out errors
+        readin_val_ict=scipy.io.loadmat('patient_'+str(patient)+'_ict_val')
+        readin_val_nonict = scipy.io.loadmat('patient_' + str(patient) + '_nonict_val')
+        val_ict_key=list(readin_val_ict.keys())
+        val_nonict_key=list(readin_val_nonict.keys())
+        val_ict = np.asarray([readin_val_ict[ict_key[3]][0],
+                                readin_ict[ict_key[4]][0],
+                                readin_ict[ict_key[5]][0],
+                                readin_ict[ict_key[6]][0][::2],
+                                readin_ict[ict_key[6]][0][1::2]])
+        val_ict = np.transpose(val_ict)
+        val_nonict = np.asarray([readin_val_nonict[ict_key[3]][0],
+                                readin_ict[ict_key[4]][0],
+                                readin_ict[ict_key[5]][0],
+                                readin_ict[ict_key[6]][0][::2],
+                                readin_ict[ict_key[6]][0][1::2]])
+        val_nonict = np.transpose(val_nonict)
+        val = np.concatenate(val_ict, val_nonict)
+        val_labels = np.concatenate(
+            np.ones(int(readin_val_ict[ict_key[3]].shape[1])),
+            np.zeros(int(readin_val_nonict[nonict_key[3]].shape[1]))
+        )
+
+        val_predict = clf.predict(val)
+        val_error = clf.get_error(val_predict, val_labels)
+        val_errors.append(val_error)
+
+
+
         
 
     # load val data, and test
@@ -119,4 +156,5 @@ if __name__=='__main__':
     f.close()
     
     
- 
+    print(train_errors)
+    print(val_errors)
