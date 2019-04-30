@@ -32,6 +32,7 @@ if __name__=='__main__':
                readin_ict[ict_key[5]][0],
                readin_ict[ict_key[6]][0][::2],
                readin_ict[ict_key[6]][0][1::2]])
+    
         train_ict= np.transpose(train_ict)
         
         
@@ -40,6 +41,7 @@ if __name__=='__main__':
                readin_nonict[nonict_key[5]][0],
                readin_nonict[nonict_key[6]][0][::2],
                readin_nonict[nonict_key[6]][0][1::2]])
+    
         train_nonict= np.transpose(train_nonict)
         
         train= np.concatenate((train_ict, train_nonict))
