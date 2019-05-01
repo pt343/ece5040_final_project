@@ -3,6 +3,7 @@ from sklearn.tree import DecisionTreeClassifier
 import numpy as np
 from sklearn import svm
 import csv
+from sklearn.ensemble import RandomForestClassifier
 
 '''
 Final submission functions
@@ -83,7 +84,7 @@ if __name__=='__main__':
             save_training=np.concatenate((save_training, train))
             save_labels=np.concatenate((save_labels, labels))"""
         
-        clf= DecisionTreeClassifier(criterion='entropy')
+        clf= RandomForestClassifier()
         clf.fit(train, labels)
         classifiers.append(clf) 
         
@@ -129,7 +130,7 @@ if __name__=='__main__':
     channels= [96,56,16,88,104,88,96]
     
     
-    f = open("submission_test_val.csv",'w')
+    f = open("submission_test_rf.csv",'w')
     csvwriter = csv.writer(f)
     csvwriter.writerow(["id", "prediction"])
     row_count=1
