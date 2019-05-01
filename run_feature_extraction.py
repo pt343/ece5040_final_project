@@ -13,7 +13,7 @@ ft2 = get_mean
 ft3 = get_kurtosis
 #ft4 = get_power_spec
 
-patient = 1
+patient = 6
 datafolderpath = '/Volumes/TOSHIBA EXT/'
 
 dt = extract_features_test(datafolderpath, patient, ft1,ft2,ft3)
