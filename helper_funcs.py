@@ -19,6 +19,7 @@ import scipy
 from scipy import signal
 import scipy.io
 import os
+import scipy.stats as stats
 
 
 def channel_line_length(signal,fs):
@@ -52,6 +53,15 @@ def get_power_spec(signal,fs):
     ps_beta=np.sum(fft[12:31])
     ps_hfo=np.sum(fft[100:601])
     return  ps_beta, ps_hfo     
+
+def get_skew(signal, fs):
+    return stats.skew(signal)
+    
+def get_mean(signal,fs):
+    return np.mean(signal)
+    
+def get_kurtosis(signal, fs): 
+    return stats.kurtosis(signal)
 
 
 
