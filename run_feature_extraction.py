@@ -8,9 +8,8 @@ from helper_funcs import *
 
 
 
-ft1 = get_skew
-ft2 = get_mean
-ft3 = get_kurtosis
+ft1 = get_entropy
+ft2 = get_IF_mean_var
 #ft4 = get_power_spec
 
 patient = 6
@@ -21,8 +20,8 @@ d1, d2, d3, d4 = extract_features_train(datafolderpath, patient, ft1,ft2,ft3)
     
 
 
-scipy.io.savemat('patient_'+str(patient)+'_ict_train2', d1)
-scipy.io.savemat('patient_'+str(patient)+'_ict_val2', d2)
-scipy.io.savemat('patient_'+str(patient)+'_nonict_train2', d3)
-scipy.io.savemat('patient_'+str(patient)+'_nonict_val2', d4)
-scipy.io.savemat('patient_'+str(patient)+'_test2', dt)
+scipy.io.savemat('patient_'+str(patient)+'_ict_train3', d1)
+scipy.io.savemat('patient_'+str(patient)+'_ict_val3', d2)
+scipy.io.savemat('patient_'+str(patient)+'_nonict_train3', d3)
+scipy.io.savemat('patient_'+str(patient)+'_nonict_val3', d4)
+scipy.io.savemat('patient_'+str(patient)+'_test3', dt)
