@@ -6,6 +6,13 @@ import csv
 from sklearn.ensemble import RandomForestClassifier
 import matplotlib.pyplot as plt
 
+
+
+from sklearn.externals.six import StringIO  
+from IPython.display import Image  
+from sklearn.tree import export_graphviz
+
+
 '''
 Final submission functions
 '''
@@ -144,6 +151,67 @@ if __name__=='__main__':
         train=np.nan_to_num(train)
         find=np.argwhere(np.isinf(train))
         
+         # plotting histograms
+        
+        """ plt.hist(np.transpose(train)[0], bins=50)  # arguments are passed to np.histogram
+        plt.title("line length patient "+ str(patient))
+        plt.show()
+        
+        plt.hist(np.transpose(train)[1], bins=100)  # arguments are passed to np.histogram
+        plt.title("energy patient "+ str(patient))
+        plt.show()
+        
+        plt.hist(np.transpose(train)[2], bins=100)  # arguments are passed to np.histogram
+        plt.title("variance patient "+ str(patient))
+        plt.show()
+        
+        
+        plt.hist(np.transpose(train)[3], bins=100)  # arguments are passed to np.histogram
+        plt.title("powerspec beta patient "+ str(patient))
+        plt.show() 
+        
+        plt.hist(np.transpose(train)[4], bins=100)  # arguments are passed to np.histogram
+        plt.title("power_spec hfo patient "+ str(patient))
+        plt.show()
+        
+        plt.hist(np.transpose(train)[5], bins=100)  # arguments are passed to np.histogram
+        plt.title("kurtosis patient "+ str(patient))
+        plt.show()
+        
+        plt.hist(np.transpose(train)[6], bins=100)  # arguments are passed to np.histogram
+        plt.title("mean patient "+ str(patient))
+        plt.show()
+        
+        
+        plt.hist(np.transpose(train)[7], bins=100)  # arguments are passed to np.histogram
+        plt.title("skew patient "+ str(patient))
+        plt.show()
+        
+        plt.hist(np.transpose(train)[8], bins=100)  # arguments are passed to np.histogram
+        plt.title("IF mean patient "+ str(patient))
+        plt.show()
+        
+        plt.hist(np.transpose(train)[9], bins=100)  # arguments are passed to np.histogram
+        plt.title("IF var patient "+ str(patient))
+        plt.show()
+        
+        
+        plt.hist(np.transpose(train)[10], bins=100)  # arguments are passed to np.histogram
+        plt.title("entropy patient "+ str(patient))
+        plt.show()"""
+        
+    
+    
+    
+        plt.scatter(labels, np.transpose(train)[0])
+        plt.show()
+        plt.scatter(labels, np.transpose(train)[1])
+        plt.show()
+        plt.scatter(labels, np.transpose(train)[2]         )
+        plt.show()
+        plt.scatter(labels, np.transpose(train)[3]         )
+        plt.show()
+        
         clf= DecisionTreeClassifier(criterion='entropy')
         clf.fit(train, labels)
         classifiers.append(clf) 
@@ -207,6 +275,12 @@ if __name__=='__main__':
             csvwriter.writerow(["patient_"+str(patient)+"_"+str(index), prediction])
             row_count=row_count+1
         print(row_count)
+        
+        
+        
+        
+        
+        
         #print(index)
     f.close()
     
