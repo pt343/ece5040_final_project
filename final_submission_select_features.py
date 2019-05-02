@@ -5,7 +5,7 @@ from sklearn import svm
 import csv
 from sklearn.ensemble import RandomForestClassifier
 import matplotlib.pyplot as plt
-
+from sklearn.cluster import KMeans
 '''
 Final submission functions
 '''
@@ -111,49 +111,8 @@ if __name__=='__main__':
         
         train= np.concatenate((train_ict, train_nonict, val_ict, val_nonict))
         
-        # plotting histograms
-        
-        plt.hist(np.transpose(train)[0], bins=50)  # arguments are passed to np.histogram
-        plt.title("line length patient "+ str(patient))
-        plt.show()
-        
-        plt.hist(np.transpose(train)[1], bins=100)  # arguments are passed to np.histogram
-        plt.title("energy patient "+ str(patient))
-        plt.show()
-        
-        plt.hist(np.transpose(train)[2], bins=100)  # arguments are passed to np.histogram
-        plt.title("variance patient "+ str(patient))
-        plt.show()
-        
-        
-        plt.hist(np.transpose(train)[3], bins=100)  # arguments are passed to np.histogram
-        plt.title("powerspec beta patient "+ str(patient))
-        plt.show() 
-        
-        plt.hist(np.transpose(train)[4], bins=100)  # arguments are passed to np.histogram
-        plt.title("power_spec hfo patient "+ str(patient))
-        plt.show()
-        
-        plt.hist(np.transpose(train)[5], bins=100)  # arguments are passed to np.histogram
-        plt.title("kurtosis patient "+ str(patient))
-        plt.show()
-        
-        plt.hist(np.transpose(train)[6], bins=100)  # arguments are passed to np.histogram
-        plt.title("mean patient "+ str(patient))
-        plt.show()
-        
-        
-        plt.hist(np.transpose(train)[7], bins=100)  # arguments are passed to np.histogram
-        plt.title("skew patient "+ str(patient))
-        plt.show()
-        
-    
-
-        
-        
-        train= np.concatenate((train_ict, train_nonict, val_ict, val_nonict))
-        clf= DecisionTreeClassifier(criterion='entropy')
-        clf.fit(train, labels)
+        clf= KMeans(n_clusters=2, random_state=0).fit(train)
+        #clf.label_array(labels, dtype=int)
         classifiers.append(clf) 
         
 
@@ -164,7 +123,7 @@ if __name__=='__main__':
     channels= [96,56,16,88,104,88,96]
     
     
-    f = open("submission_test_new_features.csv",'w')
+    f = open("submission_test_kmeans.csv",'w')
     csvwriter = csv.writer(f)
     csvwriter.writerow(["id", "prediction"])
     row_count=1
@@ -193,6 +152,8 @@ if __name__=='__main__':
                readin2[key2[5]][0]])
     
         val= np.transpose(val)
+
+            
         print(patient)
         predictions=classifiers[patient-1].predict(val)
         #predictions=combined.predict(val)
