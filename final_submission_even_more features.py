@@ -37,7 +37,16 @@ if __name__=='__main__':
         ict_key2=list(readin_ict2.keys())
         ict_key2.sort()
         nonict_key2=list(readin_nonict2.keys())
-        ict_key2.sort()
+        nonict_key2.sort()
+        
+        
+        readin_ict3=scipy.io.loadmat('patient_'+str(patient)+'_ict_train3')
+        readin_nonict3=scipy.io.loadmat('patient_'+str(patient)+'_nonict_train3')
+        
+        ict_key3=list(readin_ict3.keys())
+        ict_key3.sort()
+        nonict_key3=list(readin_nonict3.keys())
+        nonict_key3.sort()
         
         
         train_ict=np.asarray([readin_ict[ict_key[3]][0], 
@@ -47,7 +56,10 @@ if __name__=='__main__':
                readin_ict[ict_key[5]][0][1::2],
                readin_ict2[ict_key2[3]][0], 
                readin_ict2[ict_key2[4]][0],
-               readin_ict2[ict_key2[5]][0]])
+               readin_ict2[ict_key2[5]][0],
+               readin_ict3[ict_key3[3]][0][::2],
+               readin_ict3[ict_key3[3]][0][1::2],
+               readin_ict3[ict_key3[4]][0]])
     
         train_ict= np.transpose(train_ict)
         
@@ -59,7 +71,10 @@ if __name__=='__main__':
                readin_nonict[nonict_key[5]][0][1::2],
                readin_nonict2[nonict_key2[3]][0], 
                readin_nonict2[nonict_key2[4]][0],
-               readin_nonict2[nonict_key2[5]][0]])
+               readin_nonict2[nonict_key2[5]][0],
+               readin_nonict3[nonict_key3[3]][0][::2],
+               readin_nonict3[nonict_key3[3]][0][1::2],
+               readin_nonict3[nonict_key3[4]][0]])
     
         train_nonict= np.transpose(train_nonict)
         
@@ -81,7 +96,14 @@ if __name__=='__main__':
         ict_keyval2=list(readin_ict2.keys())
         ict_keyval2.sort()
         nonict_keyval2=list(readin_nonict2.keys())
-        ict_keyval2.sort()
+        nonict_keyval2.sort()
+        
+        readin_ictval3=scipy.io.loadmat('patient_'+str(patient)+'_ict_val3')
+        readin_nonictval3=scipy.io.loadmat('patient_'+str(patient)+'_nonict_val3')
+        ict_keyval3=list(readin_ict3.keys())
+        ict_keyval3.sort()
+        nonict_keyval3=list(readin_nonict3.keys())
+        nonict_keyval3.sort()
         
         
         labels=np.concatenate((ict_label,nonict_label, ict_labelval,nonict_labelval))
@@ -93,7 +115,10 @@ if __name__=='__main__':
                readin_ictval[ict_keyval[5]][0][1::2],
                readin_ictval2[ict_keyval2[3]][0], 
                readin_ictval2[ict_keyval2[4]][0],
-               readin_ictval2[ict_keyval2[5]][0]])
+               readin_ictval2[ict_keyval2[5]][0],
+               readin_ictval3[ict_keyval3[3]][0][::2],
+               readin_ictval3[ict_keyval3[3]][0][1::2],
+               readin_ictval3[ict_keyval3[4]][0]])
         val_ict= np.transpose(val_ict)
         
         
@@ -104,14 +129,22 @@ if __name__=='__main__':
                readin_nonictval[nonict_keyval[5]][0][1::2],
                readin_nonictval2[nonict_keyval2[3]][0], 
                readin_nonictval2[nonict_keyval2[4]][0],
-               readin_nonictval2[nonict_keyval2[5]][0]])
+               readin_nonictval2[nonict_keyval2[5]][0],
+               readin_nonictval3[nonict_keyval3[3]][0][::2],
+               readin_nonictval3[nonict_keyval3[3]][0][1::2],
+               readin_nonictval3[nonict_keyval3[4]][0]])
+    
+    
         val_nonict= np.transpose(val_nonict)
         
         
         
         train= np.concatenate((train_ict, train_nonict, val_ict, val_nonict))
+        train=train.astype(np.float32)
+        train=np.nan_to_num(train)
+        find=np.argwhere(np.isinf(train))
         
-        clf= RandomForestClassifier()
+        clf= DecisionTreeClassifier(criterion='entropy')
         clf.fit(train, labels)
         classifiers.append(clf) 
         
@@ -123,7 +156,7 @@ if __name__=='__main__':
     channels= [96,56,16,88,104,88,96]
     
     
-    f = open("submission_test_random_forest.csv",'w')
+    f = open("submission_test_more.csv",'w')
     csvwriter = csv.writer(f)
     csvwriter.writerow(["id", "prediction"])
     row_count=1
@@ -139,7 +172,10 @@ if __name__=='__main__':
         
         key2=list(readin2.keys())
         key2.sort()
-        print(readin[key[3]][0]) 
+
+        readin3=scipy.io.loadmat('patient_'+str(patient)+'_test3')
+        key3=list(readin3.keys())
+        key3.sort()
                
         
         val=np.asarray([readin[key[3]][0], 
@@ -149,9 +185,14 @@ if __name__=='__main__':
                readin[key[5]][0][1::2],
                readin2[key2[3]][0], 
                readin2[key2[4]][0],
-               readin2[key2[5]][0]])
+               readin2[key2[5]][0],
+               readin3[key3[3]][0][::2],
+               readin3[key3[3]][0][1::2],
+               readin3[key3[4]][0]])
     
         val= np.transpose(val)
+        val=val.astype(np.float32)
+        val=np.nan_to_num(val)
 
             
         print(patient)
