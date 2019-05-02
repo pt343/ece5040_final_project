@@ -23,7 +23,9 @@ if __name__=='__main__':
         readin_nonict=scipy.io.loadmat('patient_'+str(patient)+'_nonict_train')
         
         ict_key=list(readin_ict.keys())
+        ict_key.sort()
         nonict_key=list(readin_nonict.keys())
+        nonict_key.sort()
         
         ict_label=np.ones(int(readin_ict[ict_key[3]].shape[1]))
         nonict_label=np.zeros(int(readin_nonict[nonict_key[3]].shape[1]))
