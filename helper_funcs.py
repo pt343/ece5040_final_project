@@ -19,17 +19,43 @@ def reshape_data(arr, patient):
     '''
     Transforms the data so that you are looking at average of every 8 channels
     '''
-    div_num = 8 # number of channels to divide by
-    x, y = np.shape(arr)
-    num_data_pts = x//channels[patient-1]
-    print('patient {} has {} data'.format(patient, num_data_pts))
+    # div_num = 8 # number of channels to divide by
+    # x, y = np.shape(arr)
+    # num_data_pts = x//channels[patient-1]
+    # print('patient {} has {} data'.format(patient, num_data_pts))
+    #
+    # arr2 = np.reshape(arr, (div_num, y*(x//div_num)))
+    #
+    # # calculate the mean for 8 channels
+    # arr2 = np.mean(arr2, axis=0)
+    # arr3 = np.reshape(arr2, (num_data_pts, y*(channels[patient-1]//div_num)))
+    # return arr3
 
-    arr2 = np.reshape(arr, (div_num, y*(x//div_num)))
+    # try:
+    #     x, y = np.shape(arr)
+    # except:
+    #     x = np.shape(arr)[0]
+    #     y = 1
+    # arr2 = np.reshape(arr, (x//channels[patient-1], y*channels[patient-1]))
+    #
+    # print(x//channels[patient-1])
+    # return arr2
+    dim = 8
+    try:
+        x,y = np.shape(arr)
+    except:
+        x = np.shape(arr)[0]
+        y = 1
+    num_data = x//channels[patient-1]
+    arr2 = np.zeros((num_data*channels[patient-1]//dim,y))
+    for i in range(num_data*channels[patient-1]//dim):
+        try:
+            arr2[i] = np.mean(arr[i:i+dim-1,:], axis=0)
+        except:
+            arr2[i] = np.mean(arr[i:i+dim-1])
 
-    # calculate the mean for 8 channels
-    arr2 = np.mean(arr2, axis=0)
-    arr3 = np.reshape(arr2, (num_data_pts, y*(channels[patient-1]//div_num)))
-    return arr3
+    arr2 = np.reshape(arr2, (num_data,y*channels[patient-1]//dim))
+    return arr2
 
 
 def get_data_array(patient, file_type):
@@ -49,8 +75,19 @@ def get_data_array(patient, file_type):
                           readin[key[5]][0],
                           readin[key[6]][0][::2],
                           readin[key[6]][0][1::2]])
-        data = np.transpose(data)
-        data = reshape_data(data, patient)
+        data1 = np.transpose(data)
+
+        readin = scipy.io.loadmat('patient_' + str(patient) + '_test2')
+
+        key = list(readin.keys())
+
+        data = np.asarray([readin[key[3]][0],
+                          readin[key[4]][0],
+                          readin[key[5]][0]
+                           ])
+        data2 = np.transpose(data)
+        data = np.concatenate((data1, data2), axis=1)
+        #data = reshape_data(data, patient)
         return data
     else:
         readin_ict = scipy.io.loadmat('patient_' + str(patient) + '_ict_' + file_type)
@@ -59,26 +96,53 @@ def get_data_array(patient, file_type):
         nonict_key = list(readin_nonict.keys())
 
         # generate labels corresponding to ictal or nonictal if labels requested
-        ict_label = np.ones(int(readin_ict[ict_key[3]].shape[1]/channels[patient-1]))
-        nonict_label = np.zeros(int(readin_nonict[nonict_key[3]].shape[1]/channels[patient-1]))
+        ict_label = np.ones(int(readin_ict[ict_key[3]].shape[1]))
+        nonict_label = np.zeros(int(readin_nonict[nonict_key[3]].shape[1]))
         labels = np.concatenate((ict_label, nonict_label))
 
         ict = np.asarray([readin_ict[ict_key[3]][0],
                                 readin_ict[ict_key[4]][0],
                                 readin_ict[ict_key[5]][0],
                                 readin_ict[ict_key[6]][0][::2],
-                                readin_ict[ict_key[6]][0][1::2]])
-        ict = np.transpose(ict)
+                                readin_ict[ict_key[6]][0][1::2]
+                          ])
+        ict1 = np.transpose(ict)
 
         nonict = np.asarray([readin_nonict[nonict_key[3]][0],
                                    readin_nonict[nonict_key[4]][0],
                                    readin_nonict[nonict_key[5]][0],
                                    readin_nonict[nonict_key[6]][0][::2],
-                                   readin_nonict[nonict_key[6]][0][1::2]])
-        nonict = np.transpose(nonict)
-        data = np.concatenate((ict, nonict))
-        data = reshape_data(data, patient)
+                                   readin_nonict[nonict_key[6]][0][1::2]
+                             ])
+        nonict1 = np.transpose(nonict)
+        data1 = np.concatenate((ict1, nonict1))
+        #data = reshape_data(data, patient)
 
+        readin_ict = scipy.io.loadmat('patient_' + str(patient) + '_ict_' + file_type + '2')
+        readin_nonict = scipy.io.loadmat('patient_' + str(patient) + '_nonict_' + file_type + '2')
+        ict_key = list(readin_ict.keys())
+        nonict_key = list(readin_nonict.keys())
+
+
+        ict = np.asarray([readin_ict[ict_key[3]][0],
+                                readin_ict[ict_key[4]][0],
+                                readin_ict[ict_key[5]][0]
+                         ])
+        ict2 = np.transpose(ict)
+
+        nonict = np.asarray([readin_nonict[nonict_key[3]][0],
+                                   readin_nonict[nonict_key[4]][0],
+                                   readin_nonict[nonict_key[5]][0]
+                            ])
+        nonict2 = np.transpose(nonict)
+        data2 = np.concatenate((ict2, nonict2))
+
+        data = np.concatenate((data1, data2), axis=1)
+
+        data = reshape_data(data, patient)
+        labels = np.mean(reshape_data(labels, patient), axis=1)
+        x,y = np.shape(data)
+        print('data shape = ({}, {})'.format(x,y))
         return data, labels
 
 
@@ -106,16 +170,21 @@ def train_tree(**kwargs):
     auc_vals = []
 
     for patient in range(1,8):
+        print('on patient {}'.format(patient))
         # get data
         train, labels = get_data_array(patient, 'train')
+
+        # val, val_labels = get_data_array(patient, 'val')
+        # train = np.concatenate((train, val))
+        # labels = np.concatenate((labels, val_labels))
 
         # train tree
         clf = DecisionTreeClassifier(
             criterion               =kwargs['criterion'] if 'criterion' in kwargs else 'gini',
             splitter                =kwargs['splitter'] if 'splitter' in kwargs else 'best',
-            max_depth               =kwargs['max_depth'][patient-1] if 'max_depth' in kwargs else None,
+            max_depth               =kwargs['max_depth'] if 'max_depth' in kwargs else None,
             min_samples_split       =kwargs['min_samples_split'] if 'min_samples_split' in kwargs else 2,
-            min_samples_leaf        =kwargs['min_samples_leaf'][patient-1] if 'min_samples_leaf' in kwargs else 1,
+            min_samples_leaf        =kwargs['min_samples_leaf'] if 'min_samples_leaf' in kwargs else 1,
             min_weight_fraction_leaf=kwargs['min_weight_fraction_leaf'] if 'min_weight_fraction_leaf' in kwargs else 0,
             max_features            =kwargs['max_features'] if 'max_features' in kwargs else None,
             random_state            =kwargs['random_state'] if 'random_state' in kwargs else None,
@@ -141,7 +210,9 @@ def train_tree(**kwargs):
         val_error = get_error(val_predict, val_labels)
         val_errors.append(val_error)
 
-
+        x = np.shape(val_labels)
+        print('val label size = ({})'.format(x))
+        print(val_labels)
         # get roc
         auc_vals.append(get_auc(val_labels, val_predict))
 
