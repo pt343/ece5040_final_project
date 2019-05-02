@@ -8,9 +8,8 @@ from helper_funcs import *
 
 
 
-ft1 = get_skew
-ft2 = get_mean
-ft3 = get_kurtosis
+ft1 = get_entropy
+ft2 = get_IF_mean_var
 #ft4 = get_power_spec
 
 patient = 6

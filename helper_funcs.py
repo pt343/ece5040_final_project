@@ -20,6 +20,8 @@ from scipy import signal
 import scipy.io
 import os
 import scipy.stats as stats
+from scipy.stats import entropy
+from scipy.signal import hilbert
 
 
 def channel_line_length(signal,fs):
@@ -62,6 +64,17 @@ def get_mean(signal,fs):
     
 def get_kurtosis(signal, fs): 
     return stats.kurtosis(signal)
+
+def get_entropy(signal,fs):
+    return entropy(signal)
+
+def get_IF_mean_var(signal,fs):
+    analytic_signal = hilbert(signal)
+    instantaneous_phase = np.unwrap(np.angle(analytic_signal))
+    instantaneous_frequency = (np.diff(instantaneous_phase)/(2.0*np.pi)*fs)
+    mean = np.mean(instantaneous_frequency)
+    var = np.var(instantaneous_frequency)
+    return mean, var
 
 
 
