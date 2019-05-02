@@ -4,6 +4,7 @@ import numpy as np
 from sklearn import svm
 import csv
 from sklearn.ensemble import RandomForestClassifier
+import matplotlib.pyplot as plt
 
 '''
 Final submission functions
@@ -110,7 +111,44 @@ if __name__=='__main__':
         
         train= np.concatenate((train_ict, train_nonict, val_ict, val_nonict))
         
+        # plotting histograms
         
+        plt.hist(np.transpose(train)[0], bins=50)  # arguments are passed to np.histogram
+        plt.title("line length patient "+ str(patient))
+        plt.show()
+        
+        plt.hist(np.transpose(train)[1], bins=100)  # arguments are passed to np.histogram
+        plt.title("energy patient "+ str(patient))
+        plt.show()
+        
+        plt.hist(np.transpose(train)[2], bins=100)  # arguments are passed to np.histogram
+        plt.title("variance patient "+ str(patient))
+        plt.show()
+        
+        
+        plt.hist(np.transpose(train)[3], bins=100)  # arguments are passed to np.histogram
+        plt.title("powerspec beta patient "+ str(patient))
+        plt.show() 
+        
+        plt.hist(np.transpose(train)[4], bins=100)  # arguments are passed to np.histogram
+        plt.title("power_spec hfo patient "+ str(patient))
+        plt.show()
+        
+        plt.hist(np.transpose(train)[5], bins=100)  # arguments are passed to np.histogram
+        plt.title("kurtosis patient "+ str(patient))
+        plt.show()
+        
+        plt.hist(np.transpose(train)[6], bins=100)  # arguments are passed to np.histogram
+        plt.title("mean patient "+ str(patient))
+        plt.show()
+        
+        
+        plt.hist(np.transpose(train)[7], bins=100)  # arguments are passed to np.histogram
+        plt.title("skew patient "+ str(patient))
+        plt.show()
+        
+    
+
         
         
         train= np.concatenate((train_ict, train_nonict, val_ict, val_nonict))
