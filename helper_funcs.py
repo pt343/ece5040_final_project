@@ -47,14 +47,19 @@ def reshape_data(arr, patient):
         x = np.shape(arr)[0]
         y = 1
     num_data = x//channels[patient-1]
-    arr2 = np.zeros((num_data*channels[patient-1]//dim,y))
-    for i in range(num_data*channels[patient-1]//dim):
-        try:
-            arr2[i] = np.mean(arr[i:i+dim-1,:], axis=0)
-        except:
-            arr2[i] = np.mean(arr[i:i+dim-1])
+    # arr2 = np.zeros((num_data*channels[patient-1]//dim,y))
+    # for i in range(num_data*channels[patient-1]//dim):
+    #     try:
+    #         arr2[i] = np.mean(arr[i:i+dim-1,:], axis=0)
+    #     except:
+    #         arr2[i] = np.mean(arr[i:i+dim-1])
+    #
+    # arr2 = np.reshape(arr2, (num_data,y*channels[patient-1]//dim))
+    # return arr2
+    arr2 = np.reshape(arr, (x//dim, dim, y))
+    arr2 = np.mean(arr2, axis=1)
+    arr2 = np.reshape(arr2, (num_data, y*channels[patient-1]//dim))
 
-    arr2 = np.reshape(arr2, (num_data,y*channels[patient-1]//dim))
     return arr2
 
 
@@ -211,8 +216,6 @@ def train_tree(**kwargs):
         val_errors.append(val_error)
 
         x = np.shape(val_labels)
-        print('val label size = ({})'.format(x))
-        print(val_labels)
         # get roc
         auc_vals.append(get_auc(val_labels, val_predict))
 
