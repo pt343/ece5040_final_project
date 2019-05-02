@@ -5,7 +5,7 @@ from sklearn import svm
 import csv
 from sklearn.ensemble import RandomForestClassifier
 import matplotlib.pyplot as plt
-from sklearn.cluster import KMeans
+
 '''
 Final submission functions
 '''
@@ -111,8 +111,8 @@ if __name__=='__main__':
         
         train= np.concatenate((train_ict, train_nonict, val_ict, val_nonict))
         
-        clf= KMeans(n_clusters=2, random_state=0).fit(train)
-        #clf.label_array(labels, dtype=int)
+        clf= RandomForestClassifier()
+        clf.fit(train, labels)
         classifiers.append(clf) 
         
 
@@ -123,7 +123,7 @@ if __name__=='__main__':
     channels= [96,56,16,88,104,88,96]
     
     
-    f = open("submission_test_kmeans.csv",'w')
+    f = open("submission_test_random_forest.csv",'w')
     csvwriter = csv.writer(f)
     csvwriter.writerow(["id", "prediction"])
     row_count=1

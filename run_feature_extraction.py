@@ -12,11 +12,11 @@ ft1 = get_entropy
 ft2 = get_IF_mean_var
 #ft4 = get_power_spec
 
-patient = 6
+patient = 7
 datafolderpath = '/Volumes/TOSHIBA EXT/'
 
-dt = extract_features_test(datafolderpath, patient, ft1,ft2,ft3)
-d1, d2, d3, d4 = extract_features_train(datafolderpath, patient, ft1,ft2,ft3)
+dt = extract_features_test(datafolderpath, patient, ft1,ft2)
+d1, d2, d3, d4 = extract_features_train(datafolderpath, patient, ft1,ft2)
     
 
 
