@@ -4,8 +4,9 @@ import scipy
 import scipy.io
 import os
 from sklearn.tree import DecisionTreeClassifier
-from sklearn.metrics import roc_auc_score
+from sklearn.metrics import roc_auc_score, roc_curve
 import csv
+import matplotlib.pyplot as plt
 
 #======================================================================#
 # Global variables
@@ -15,54 +16,6 @@ channels = [96, 56, 16, 88, 104, 88, 96] # number of channels for each patient
 #======================================================================#
 # Data Functions
 #======================================================================#
-def reshape_data(arr, patient):
-    '''
-    Transforms the data so that you are looking at average of every 8 channels
-    '''
-    # div_num = 8 # number of channels to divide by
-    # x, y = np.shape(arr)
-    # num_data_pts = x//channels[patient-1]
-    # print('patient {} has {} data'.format(patient, num_data_pts))
-    #
-    # arr2 = np.reshape(arr, (div_num, y*(x//div_num)))
-    #
-    # # calculate the mean for 8 channels
-    # arr2 = np.mean(arr2, axis=0)
-    # arr3 = np.reshape(arr2, (num_data_pts, y*(channels[patient-1]//div_num)))
-    # return arr3
-
-    # try:
-    #     x, y = np.shape(arr)
-    # except:
-    #     x = np.shape(arr)[0]
-    #     y = 1
-    # arr2 = np.reshape(arr, (x//channels[patient-1], y*channels[patient-1]))
-    #
-    # print(x//channels[patient-1])
-    # return arr2
-    dim = 8
-    try:
-        x,y = np.shape(arr)
-    except:
-        x = np.shape(arr)[0]
-        y = 1
-    num_data = x//channels[patient-1]
-    # arr2 = np.zeros((num_data*channels[patient-1]//dim,y))
-    # for i in range(num_data*channels[patient-1]//dim):
-    #     try:
-    #         arr2[i] = np.mean(arr[i:i+dim-1,:], axis=0)
-    #     except:
-    #         arr2[i] = np.mean(arr[i:i+dim-1])
-    #
-    # arr2 = np.reshape(arr2, (num_data,y*channels[patient-1]//dim))
-    # return arr2
-    arr2 = np.reshape(arr, (x//dim, dim, y))
-    arr2 = np.mean(arr2, axis=1)
-    arr2 = np.reshape(arr2, (num_data, y*channels[patient-1]//dim))
-
-    return arr2
-
-
 def get_data_array(patient, file_type):
     """
     file_type = 'train', 'test', or 'val'
@@ -142,12 +95,28 @@ def get_data_array(patient, file_type):
         nonict2 = np.transpose(nonict)
         data2 = np.concatenate((ict2, nonict2))
 
-        data = np.concatenate((data1, data2), axis=1)
+        readin_ict = scipy.io.loadmat('patient_' + str(patient) + '_ict_' + file_type + '3')
+        readin_nonict = scipy.io.loadmat('patient_' + str(patient) + '_nonict_' + file_type + '3')
+        ict_key = list(readin_ict.keys())
+        nonict_key = list(readin_nonict.keys())
 
-        data = reshape_data(data, patient)
-        labels = np.mean(reshape_data(labels, patient), axis=1)
-        x,y = np.shape(data)
-        print('data shape = ({}, {})'.format(x,y))
+
+        ict = np.asarray([
+            #readin_ict[ict_key[3]][0],
+                                readin_ict[ict_key[4]][0][::2],
+                                readin_ict[ict_key[4]][0][1::2]
+                         ])
+        ict3 = np.transpose(ict)
+
+        nonict = np.asarray([
+            #readin_nonict[nonict_key[3]][0],
+                                   readin_nonict[nonict_key[4]][0][::2],
+                                   readin_nonict[nonict_key[4]][0][1::2]
+                            ])
+        nonict3 = np.transpose(nonict)
+        data3 = np.concatenate((ict3, nonict3))
+
+        data = np.concatenate((data1, data2, data3), axis=1)
         return data, labels
 
 
@@ -160,6 +129,13 @@ def get_error(G,Y):
 
 def get_auc(true_vals, pred_vals):
     return roc_auc_score(true_vals, pred_vals)
+
+
+def plot_roc(true_vals, pred_vals):
+    fpr, tpr, threshold = roc_curve(true_vals, pred_vals)
+    #print(np.shape(fpr))
+    #return fpr, tpr, threshold
+    plt.plot(fpr, tpr)
 
 
 #======================================================================#
@@ -178,7 +154,9 @@ def train_tree(**kwargs):
         print('on patient {}'.format(patient))
         # get data
         train, labels = get_data_array(patient, 'train')
+        train = np.nan_to_num(train)
 
+        train = np.float32(train)
         # val, val_labels = get_data_array(patient, 'val')
         # train = np.concatenate((train, val))
         # labels = np.concatenate((labels, val_labels))
@@ -209,15 +187,18 @@ def train_tree(**kwargs):
         # validation errors
         val, val_labels = get_data_array(patient, 'val')
 
-        #val_labels = np.mean(val_labels.reshape(int(val_labels.size / channels[patient - 1]), channels[patient - 1]), axis=1)
+        val_labels = np.mean(val_labels.reshape(int(val_labels.size / channels[patient - 1]), channels[patient - 1]), axis=1)
         val_predict = clf.predict(val)
-        #val_predict = np.mean(val_predict.reshape(int(val_predict.size / channels[patient - 1]), channels[patient - 1]), axis=1)
+        val_predict = np.mean(val_predict.reshape(int(val_predict.size / channels[patient - 1]), channels[patient - 1]), axis=1)
         val_error = get_error(val_predict, val_labels)
         val_errors.append(val_error)
 
         x = np.shape(val_labels)
-        # get roc
+        # get auc
         auc_vals.append(get_auc(val_labels, val_predict))
+
+        # plot the ROC
+        plot_roc(val_labels, val_predict)
 
     return classifiers, train_errors, val_errors, auc_vals
 
@@ -230,7 +211,6 @@ def predict_test(file_name, classifiers):
         val = get_data_array(patient, 'test')
         predictions = classifiers[patient - 1].predict(val)
 
-        # TODO: fix reshaping of channels
         predictions = np.mean(predictions.reshape(int(predictions.size / channels[patient - 1]), channels[patient - 1]),
                               axis=1)
 

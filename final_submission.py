@@ -1,4 +1,3 @@
-import numpy as np
 import matplotlib.pyplot as plt
 from helper_funcs import train_tree, predict_test
 
@@ -17,13 +16,11 @@ if __name__=='__main__':
     average_auc_vals7 = []
 
     # sweep a variable for optimization
-    var_sweep = [i for i in range(1,25)]
-
-    patient = 2
+    # var_sweep = [i*5 for i in range(1,8)]
 
     # optimal max depths for each patient, calculated graphically
-    max_depth = [4, 4, 4, 4, None, 4, 4]
-    min_samples_leaf = [1, 1, 1, 1, 2, 1, 1]
+    # max_depth = [4, 4, 4, 4, None, 4, 4]
+    # min_samples_leaf = [1, 1, 1, 1, 2, 1, 1]
 
     #
     # for i in var_sweep:
@@ -47,28 +44,6 @@ if __name__=='__main__':
     if save_file != '':
         predict_test(save_file, classifiers)
 
-    # print('average train error={}'.format(np.mean(train_errors)))
-    # print('average val error={}'.format(np.mean(val_errors)))
-    # print('auc={}'.format(np.mean(auc_vals)))
-
-    print('patient 5 auc = {}'.format(auc_vals[4]))
-
-    #print('train errors:')
-    #print(average_train_errors)
-    #print('average train errors = {}'.format(np.mean(average_train_errors)))
-    #print('val errors:')
-    #print(average_val_errors)
-    #print('average val errors = {}'.format(np.mean(average_val_errors)))
-
-    # legend = []
-    # for i in min_samples_leaf:
-    # #plt.plot(min_samples_leaf, average_train_errors)
-    #     plt.plot(min_samples_leaf, average_val_errors[i:i+18])
-    #     legend.append('min_samples_leaf=' + str(i))
-    # plt.xlabel('max_depth')
-    # plt.ylabel('error')
-    # plt.legend(legend)
-    # plt.show()
 
     # plt.plot(var_sweep,average_train_errors)
     # plt.plot(var_sweep,average_val_errors)
@@ -85,5 +60,26 @@ if __name__=='__main__':
     # plt.plot(var_sweep, average_auc_vals6)
     # plt.plot(var_sweep, average_auc_vals7)
     # plt.legend(['pt1', 'pt2', 'pt3', 'pt4', 'pt5', 'pt6', 'pt7'])
+    # plt.xlabel('Max Depth')
+    # plt.ylabel('AUC')
     # plt.show()
+
+
+    # ROC curves already plotted in tree function,
+    # so just need to add labels add line and legend and show plot
+    plt.plot([0, 1], [0, 1], '--k')
+    plt.legend([
+        'Patient 1, AUC={:.3f}'.format(auc_vals[0]),
+        'Patient 2, AUC={:.3f}'.format(auc_vals[1]),
+        'Patient 3, AUC={:.3f}'.format(auc_vals[2]),
+        'Patient 4, AUC={:.3f}'.format(auc_vals[3]),
+        'Patient 5, AUC={:.3f}'.format(auc_vals[4]),
+        'Patient 6, AUC={:.3f}'.format(auc_vals[5]),
+        'Patient 7, AUC={:.3f}'.format(auc_vals[6])
+    ])
+    plt.xlabel('False Positive Rate')
+    plt.ylabel('True Positive Rate')
+    plt.title('ROC for Each Patient')
+    plt.show()
+
 
